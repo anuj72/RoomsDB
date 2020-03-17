@@ -15,6 +15,13 @@ class MainActivity : BaseFragment() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        launch {
+            applicationContext?.let{
+                val notes = NoteDatabase(it).getNoteDao().getAllNotes()
+                textView?.text=notes.toString()
+            }
+        }
+
     }
 
     fun SaveDb(view: View) {
@@ -28,6 +35,12 @@ class MainActivity : BaseFragment() {
                 if (note == null) {
                     NoteDatabase(it).getNoteDao().addNote(mNote)
                     Toast.makeText(applicationContext,"Notes Saved",Toast.LENGTH_SHORT).show()
+                    launch {
+                        applicationContext?.let{
+                            val notes = NoteDatabase(it).getNoteDao().getAllNotes()
+                            textView?.text=notes.toString()
+                        }
+                    }
 
                 } else {
                     mNote.id = note!!.id
