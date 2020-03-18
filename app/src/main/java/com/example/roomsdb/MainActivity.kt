@@ -14,14 +14,7 @@ class MainActivity : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        launch {
-            applicationContext?.let{
-                val notes = NoteDatabase(it).getNoteDao().getAllNotes()
-                textView?.text=notes.toString()
-            }
-        }
-
+        setNotes()
     }
 
     fun SaveDb(view: View) {
@@ -35,14 +28,7 @@ class MainActivity : BaseFragment() {
                 if (note == null) {
                     NoteDatabase(it).getNoteDao().addNote(mNote)
                     Toast.makeText(applicationContext,"Notes Saved",Toast.LENGTH_SHORT).show()
-                    launch {
-                        applicationContext?.let{
-                            val notes = NoteDatabase(it).getNoteDao().getAllNotes()
-                            textView?.text=notes.toString()
-                        }
-                    }
-
-                } else {
+                    setNotes() } else {
                     mNote.id = note!!.id
                     NoteDatabase(it).getNoteDao().updateNote(mNote)
                     Toast.makeText(applicationContext,"Note Updated",Toast.LENGTH_SHORT).show()
@@ -53,5 +39,19 @@ class MainActivity : BaseFragment() {
 
             }
         }
+    }
+    fun setNotes(){
+         var noteList: ArrayList<String> = ArrayList<String>()
+        launch {
+            applicationContext?.let{
+                val notes: List<Note> = NoteDatabase(it).getNoteDao().getAllNotes()
+                  for(i in notes){
+                      var str1 = i.notes
+                      noteList.add(str1)
+                  }
+                textView?.text=noteList.toString()
+            }
+        }
+
     }
 }
